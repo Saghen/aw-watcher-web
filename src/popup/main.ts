@@ -8,7 +8,12 @@ import {
   setEnabled,
   watchSyncDate,
   watchSyncSuccess,
+  setBucketIdOverride
 } from '../storage'
+
+import {
+  getBucketId,
+} from '../background/client'
 
 function setConnected(connected: boolean | undefined) {
   const connectedColor = connected ? '#00AA00' : '#FF0000'
@@ -58,6 +63,28 @@ async function renderStatus() {
   // Last sync
   setSyncDate(syncStatus.date)
   watchSyncDate(setSyncDate)
+
+  // Bucket ID
+  const bucketIdInput = document.getElementById('bucket-id-input') as HTMLInputElement
+  const saveBucketIdButton = document.getElementById('save-bucket-id') as HTMLButtonElement
+
+  // Load the current bucket ID
+  getBucketId().then(bucketId => {
+    if (bucketId) {
+      bucketIdInput.value = bucketId
+    }
+  })
+
+  // Save button click handler
+  saveBucketIdButton.addEventListener('click', async () => {
+    const newBucketId = bucketIdInput.value.trim()
+    if (newBucketId) {
+      await setBucketIdOverride(newBucketId)
+      alert('Bucket ID saved successfully!')
+    } else {
+      alert('Please enter a valid Bucket ID')
+    }
+  })
 
   // Testing
   if (config.isDevelopment) {

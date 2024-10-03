@@ -79,3 +79,8 @@ export const getHeartbeatData = (): Promise<HeartbeatData | undefined> =>
   browser.storage.local.get('heartbeatData').then((_) => _.heartbeatData)
 export const setHeartbeatData = (heartbeatData: HeartbeatData) =>
   browser.storage.local.set({ heartbeatData })
+
+export const getBucketIdOverride = (): Promise<string> =>
+  browser.storage.local.get('bucketId').then((_) => _.bucketId)
+export const setBucketIdOverride = (bucketId: string) =>
+  browser.storage.local.set({ bucketId })
