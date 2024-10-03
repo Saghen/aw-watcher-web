@@ -3,7 +3,7 @@ import config from '../config'
 import { AWClient, IEvent } from 'aw-client'
 import retry from 'p-retry'
 import { emitNotification, getBrowserName, logHttpError } from './helpers'
-import { getSyncStatus, setSyncStatus } from '../storage'
+import { getSyncStatus, setSyncStatus, getBucketIdOverride } from '../storage'
 
 export const getClient = () =>
   new AWClient('aw-client-web', { testing: config.isDevelopment })
@@ -62,4 +62,8 @@ export async function sendHeartbeat(
     })
 }
 
-export const getBucketId = () => `aw-watcher-web-${getBrowserName()}`
+export const getBucketId = async () => {
+  let r = await getBucketIdOverride();
+  if (r) return r;
+  return `aw-watcher-web-${getBrowserName()}`
+}
